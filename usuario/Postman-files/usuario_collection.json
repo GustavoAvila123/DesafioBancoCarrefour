@@ -1,0 +1,686 @@
+{
+	"info": {
+		"_postman_id": "61071c74-a55e-4f2b-9f1e-42b9bc42cc38",
+		"name": "Desafio",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16154067"
+	},
+	"item": [
+		{
+			"name": "Passo 1 - Lista de usuários",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"1.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`1.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(200, 299);\r",
+							"\r",
+							"pm.test(\"1.3 - O status code deverá ser OK\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"if (response.quantidade !== undefined) {\r",
+							"    pm.test(\"1.4 - O campo 'quantidade' é um número!\", function () {\r",
+							"        pm.expect(typeof response.quantidade).to.eql(\"number\");\r",
+							"    });\r",
+							"\r",
+							"    pm.test(`1.5 - Valor do campo 'quantidade' é: ${response.quantidade}`, function () {\r",
+							"        pm.expect(response.quantidade).to.exist;\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(\"1.5 - Campo 'quantidade' não foi encontrado\", function () {\r",
+							"        pm.expect(response.quantidade).to.not.be.undefined;\r",
+							"    });\r",
+							"}\r",
+							"\r",
+							"if (response.usuarios && Array.isArray(response.usuarios)) {\r",
+							"    pm.test(\"1.6 - Array de 'usuarios' encontrado\", function () {\r",
+							"        pm.expect(response.usuarios.length).to.be.greaterThan(0, \"Deve haver pelo menos 1 usuário\");\r",
+							"    });\r",
+							"\r",
+							"    response.usuarios.forEach((usuario, index) => {\r",
+							"        pm.environment.set(`nome_${index}`, usuario.nome);\r",
+							"        pm.environment.set(`email_${index}`, usuario.email);\r",
+							"        pm.environment.set(`password_${index}`, usuario.password);\r",
+							"        pm.environment.set(`administrador_${index}`, usuario.administrador);\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(\"1.6 - Array 'usuarios' não encontrado na resposta\", function () {\r",
+							"        pm.expect(response.usuarios).to.not.be.undefined;\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{urlBase}}/usuarios",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 2 - Criar usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"2.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`2.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(200, 299);\r",
+							"\r",
+							"pm.test(\"2.3 - O status code deverá ser Created\", function () {\r",
+							"    pm.response.to.have.status(\"Created\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"2.4 - Mensagem de sucesso validada\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+							"});\r",
+							"\r",
+							"if (response._id) {\r",
+							"    pm.environment.set(\"user_id_criado\", response._id);\r",
+							"\r",
+							"    pm.test(\"2.5 - ID armazenado com sucesso\", function () {\r",
+							"        pm.expect(response._id).to.exist;\r",
+							"    });\r",
+							"} else {\r",
+							"    pm.test(\"2.5 - Campo '_id' não encontrado\", function () {\r",
+							"        pm.expect(response._id).to.not.be.undefined;\r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"{{nome}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"administrador\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlBase}}/usuarios",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 3 - Criar usuário - Campos obrigatórios",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"3.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`3.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(400, 499);\r",
+							"\r",
+							"pm.test(\"3.3 - O status code deverá ser Bad Request\", function () {\r",
+							"    pm.response.to.have.status(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"3.4 - Validar mensagens de erro\", function () {\r",
+							"    pm.expect(response.nome).to.eql(\"nome não pode ficar em branco\");\r",
+							"    pm.expect(response.email).to.eql(\"email não pode ficar em branco\");\r",
+							"    pm.expect(response.password).to.eql(\"password não pode ficar em branco\");\r",
+							"    pm.expect(response.administrador).to.eql(\"administrador deve ser 'true' ou 'false'\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"\",\r\n  \"email\": \"\",\r\n  \"password\": \"\",\r\n  \"administrador\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlBase}}/usuarios",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 4 - Criando usuário - Já existente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"4.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`4.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(400, 499);\r",
+							"\r",
+							"pm.test(\"4.3 - O status code deverá ser Bad Request\", function () {\r",
+							"    pm.response.to.have.status(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"4.4 - Validar mensagens de erro\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"Este email já está sendo usado\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"{{nome}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"administrador\": \"true\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlBase}}/usuarios",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 5 - Consultar usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"5.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`5.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(200, 299);\r",
+							"\r",
+							"pm.test(\"5.3 - O status code deverá ser OK\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"5.4 - Todos os campos estão preenchidos corretamente\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.nome).to.eql(pm.variables.get(\"nome\"));\r",
+							"    pm.expect(jsonData.email).to.eql(pm.variables.get(\"email\"));\r",
+							"    pm.expect(jsonData.password).to.eql(pm.variables.get(\"password\"));\r",
+							"    pm.expect(jsonData.administrador).to.eql(\"true\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"5.5 - ID é o mesmo do consultado\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData._id).to.eql(pm.variables.get(\"user_id_criado\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{urlBase}}/usuarios/{{user_id_criado}}",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios",
+						"{{user_id_criado}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 6 - Atualizar usuário criado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"6.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`6.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(200, 299);\r",
+							"\r",
+							"pm.test(\"6.3 - O status code deverá ser OK\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"6.4 - Validar mensagens de sucesso\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"Registro alterado com sucesso\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"{{nome_Atualizado}}\",\r\n  \"email\": \"{{email_Atualizado}}\",\r\n  \"password\": \"{{password_Atualizada}}\",\r\n  \"administrador\": \"false\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlBase}}/usuarios/{{user_id_criado}}",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios",
+						"{{user_id_criado}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 7 - Atualizar usuário - campos obrigatórios",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"7.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`7.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(400, 499);\r",
+							"\r",
+							"pm.test(\"7.3 - O status code deverá ser Bad Request\", function () {\r",
+							"    pm.response.to.have.status(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"7.4 - Validar mensagens de erro\", function () {\r",
+							"    pm.expect(response.nome).to.eql(\"nome não pode ficar em branco\");\r",
+							"    pm.expect(response.email).to.eql(\"email não pode ficar em branco\");\r",
+							"    pm.expect(response.password).to.eql(\"password não pode ficar em branco\");\r",
+							"    pm.expect(response.administrador).to.eql(\"administrador deve ser 'true' ou 'false'\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"\",\r\n  \"email\": \"\",\r\n  \"password\": \"\",\r\n  \"administrador\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{urlBase}}/usuarios/{{user_id_criado}}",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios",
+						"{{user_id_criado}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 8 - Consultar usuário atualizado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"8.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`8.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(200, 299);\r",
+							"\r",
+							"pm.test(\"8.3 - O status code deverá ser OK\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"8.4 - Todos os campos estão preenchidos corretamente\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.nome).to.eql(pm.variables.get(\"nome_Atualizado\"));\r",
+							"    pm.expect(jsonData.email).to.eql(pm.variables.get(\"email_Atualizado\"));\r",
+							"    pm.expect(jsonData.password).to.eql(pm.variables.get(\"password_Atualizada\"));\r",
+							"    pm.expect(jsonData.administrador).to.eql(\"false\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"8.5 - ID é o mesmo do consultado\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData._id).to.eql(pm.variables.get(\"user_id_criado\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{urlBase}}/usuarios/{{user_id_criado}}",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios",
+						"{{user_id_criado}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 9 - Excluir usuário",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"9.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`9.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(200, 299);\r",
+							"\r",
+							"pm.test(\"9.3 - O status code deverá ser OK\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"9.4 - Validar mensagens de sucesso\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"Registro excluído com sucesso\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{urlBase}}/usuarios/{{user_id_criado}}",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios",
+						"{{user_id_criado}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 10 - Excluir usuário - Inexistente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"10.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`10.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(200, 299);\r",
+							"\r",
+							"pm.test(\"10.3 - O status code deverá ser OK\", function () {\r",
+							"    pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"10.4 - Validar mensagens de sucesso\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"Nenhum registro excluído\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{urlBase}}/usuarios/{{user_id_criado}}",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios",
+						"{{user_id_criado}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Passo 11 - Consultar usuário - Excluído",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"11.1 - Verifique se o tempo de resposta é inferior a 1000 ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000, \"Tempo de resposta é \" + pm.response.responseTime + \" ms\");\r",
+							"});\r",
+							"\r",
+							"function verificarStatusCodeInterno(valorInicial, valorFinal) {\r",
+							"    pm.test(`11.2 - O código de status deve estar entre ${valorInicial} e ${valorFinal}`, function () {\r",
+							"        pm.expect(pm.response.code).to.be.within(valorInicial, valorFinal);\r",
+							"    });\r",
+							"}\r",
+							"verificarStatusCodeInterno(400, 499);\r",
+							"\r",
+							"pm.test(\"11.3 - O status code deverá ser Bad Request\", function () {\r",
+							"    pm.response.to.have.status(\"Bad Request\");\r",
+							"});\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"11.4 - Validar mensagens de erro\", function () {\r",
+							"    pm.expect(response.message).to.eql(\"Usuário não encontrado\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{urlBase}}/usuarios/{{user_id_criado}}",
+					"host": [
+						"{{urlBase}}"
+					],
+					"path": [
+						"usuarios",
+						"{{user_id_criado}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
