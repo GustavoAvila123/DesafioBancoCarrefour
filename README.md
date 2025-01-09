@@ -4,7 +4,7 @@
 </h1>
 
 <div style="display: flex; justify-content: center;">
-<a href="https://gitlab.prodesp.sp.gov.br/pge/portal/site-pge/-/commits/master?ref_type=heads"><img src="https://img.shields.io/badge/-COMMITS-f44336?style=for-the-badge&logo=github&logoColor=white" width="100" height="22" style="margin-right: 5px;"/></a>
+<a href="https://github.com/GustavoAvila123/DesafioBancoCarrefour"><img src="https://img.shields.io/badge/-COMMITS-f44336?style=for-the-badge&logo=github&logoColor=white" width="100" height="22" style="margin-right: 5px;"/></a>
 <a href="https://serverest.dev/#/"><img src="https://img.shields.io/badge/-API-1da750?style=for-the-badge&logo=internet-explorer&logoColor=White" width="60" height="22" style="margin-right: 5px;"/></a>
 </div>
 
@@ -47,7 +47,7 @@ A API da aplicação visa garantir uma experiência <strong>CONFIÁVEL</strong> 
 <pre>
 <code class="language-bash">
 <span style="color: #f44336;"># Clonar o repositório</span>
-$ https://gitlab.prodesp.sp.gov.br/pge/portal/site-pge
+$ https://github.com/GustavoAvila123/DesafioBancoCarrefour.git
 
 <span style="color: #f44336;"># Instalar o Newman</span>
 $ npm install -g newman
@@ -98,7 +98,7 @@ $ newman run ./usuario/Postman-files/usuario_collection.json -e ./usuario/Postma
   <table>
   <tr>
     <td align="center">
-      <a href="">
+      <a href="www.linkedin.com/in/gustavo-ávila-1168a8150">
         <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/132934043?s=400&u=d70e99353630191829cdfbc95f9f48c0a66299e8&v=4" width="100px;" alt=""/>
         <br />
          <sub style="color: white;"><b>Gustavo Ávila</b></sub>
