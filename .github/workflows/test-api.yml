@@ -1,0 +1,36 @@
+name: Test API with Newman
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest 
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v2 
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16' 
+
+    - name: Install dependencies
+      run: |
+        npm install newman -g  # Instala o Newman globalmente.
+
+    - name: Run Postman tests
+      run: |
+        newman run ./usuario/Postman-files/usuario_collection.json -e ./usuario/Postman-files/usuario_environment.json  # Execute seus testes Postman com o Newman.
+
+    - name: Upload test results as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: newman-results
+        path: newman/* 
