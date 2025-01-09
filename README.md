@@ -21,7 +21,7 @@
 <p style="color: white;">Este projeto é um conjunto abrangente de testes automatizados para <strong>garantir a funcionalidade e a integridade da API de Gerenciamento de Usuários.</strong><br>
 Ele cobre todos os aspectos da API RESTful, incluindo operações de CRUD (criação, leitura, atualização e exclusão) de usuários.<br>
 
-<strong>A estrutura dos testes assegura uma cobertura de 100%</strong>, incluindo autenticação via token JWT, validação de limites de requisições e verificação de integridade dos dados dos usuários.<br>
+<strong>A estrutura dos testes assegura uma cobertura de 100%</strong>, incluindo a autenticação via token JWT, validação de limites de requisições e verificação de integridade dos dados dos usuários.<br>
 
 Além disso, o projeto está integrado em uma pipeline de CI, gerando relatórios dos resultados dos testes, garantindo que a API seja testada de forma contínua e eficiente.<br>
 
