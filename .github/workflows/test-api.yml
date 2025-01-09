@@ -30,7 +30,7 @@ jobs:
         newman run ./usuario/Postman-files/usuario_collection.json -e ./usuario/Postman-files/usuario_environment.json  # Execute seus testes Postman com o Newman.
 
     - name: Upload test results as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: newman-results
         path: newman/* 
